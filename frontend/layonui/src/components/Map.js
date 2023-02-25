@@ -4,7 +4,9 @@ import USAMap from "react-usa-map";
 import importedStateConfig from "../data/stateConfigData"; //temporary
 import importedStateData from "../data/data"; //actual data beinig used
 
-const Map = () => {
+const Map = (props) => {
+  const { selectedState, setSelectedState } = props;
+
   //data that is loaded containing the dataset data
   const [data, setData] = useState(null);
 
@@ -12,7 +14,7 @@ const Map = () => {
   const [month, setMonth] = useState("Feb2020");
 
   //currently selected state
-  const [selectedState, setSelectedState] = useState(null);
+  // const [selectedState, setSelectedState] = useState(null);
 
   const [statesConfig, setStatesConfig] = useState({
     ...importedStateConfig,
@@ -28,11 +30,46 @@ const Map = () => {
     // },
   });
 
+  //cities to be displayed
+  const [currentCities, setCurrentCities] = useState([]);
+
   //this function returns a hexadecimal value for the map based on the intensity
-  const getRedHexValue = (number, range) => {};
+  function getColor(value, range) {
+    const colors = [
+      { r: 255, g: 229, b: 217 }, // blue
+      { r: 250, g: 105, b: 72 }, // green
+      { r: 222, g: 44, b: 38 }, // yellow
+      { r: 166, g: 15, b: 20 }, // red
+    ];
+    let idx1 = Math.floor(
+      ((value - range.min) / (range.max - range.min)) * (colors.length - 1)
+    );
+    let idx2 = Math.ceil(
+      ((value - range.min) / (range.max - range.min)) * (colors.length - 1)
+    );
+
+    if (idx1 < 0) {
+      idx1 = 0;
+    }
+    if (idx2 < 0) {
+      idx2 = 0;
+    }
+
+    console.log(idx1, idx2);
+    const color1 = colors[idx1];
+    const color2 = colors[idx2];
+    const factor =
+      ((value - range.min) / (range.max - range.min)) * (colors.length - 1) -
+      idx1;
+    const r = Math.round(color1.r + factor * (color2.r - color1.r));
+    const g = Math.round(color1.g + factor * (color2.g - color1.g));
+    const b = Math.round(color1.b + factor * (color2.b - color1.b));
+    return `rgb(${r},${g},${b})`;
+  }
 
   const mapHandler = (event) => {
     // console.log(event.target.dataset.name);
+    let stateName = event.target.dataset.name;
     var statesConfigLocal = JSON.parse(JSON.stringify(statesConfig));
 
     //changes the color of the current selected state back to the original color
@@ -43,19 +80,24 @@ const Map = () => {
     }
 
     //changing the color of the selected state on the map
-    if (statesConfigLocal[event.target.dataset.name] == null) {
-      statesConfigLocal[event.target.dataset.name] = {
-        backupFill: "#D3D3D3",
-        fill: "navy",
+    if (statesConfigLocal[stateName] == null) {
+      statesConfigLocal[stateName] = {
+        backupFill: "#FFE5D9",
+        fill: "#36b3c2",
       };
     } else {
-      statesConfigLocal[event.target.dataset.name].fill = "navy";
+      statesConfigLocal[stateName].fill = "#36b3c2";
     }
 
-    setSelectedState(event.target.dataset.name);
+    setSelectedState(stateName);
+
+    //now setting the selected cities based on the currently selected state
+    if (data != null && data[month][stateName] != null) {
+      setCurrentCities(data[month][stateName]["cities"]);
+    }
 
     // for (const [key, value] of Object.entries(statesConfigLocal)) {
-    //   if (key == event.target.dataset.name) {
+    //   if (key == stateName) {
     // }
 
     //sets the stateConfigLocal back to the state with updated values
@@ -96,7 +138,11 @@ const Map = () => {
 
       for (const [key, value] of Object.entries(statesConfigLocal)) {
         if (statesConfigLocal[key] != null) {
-          statesConfigLocal[key]["fill"] = getRedHexValue(
+          statesConfigLocal[key]["fill"] = getColor(
+            statesConfigLocal[key]["layoffs"],
+            range
+          );
+          statesConfigLocal[key]["backupFill"] = getColor(
             statesConfigLocal[key]["layoffs"],
             range
           );

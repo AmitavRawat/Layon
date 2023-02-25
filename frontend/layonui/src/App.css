@@ -5,3 +5,8 @@ path:hover {
   opacity: 0.5;
   cursor: pointer;
 }
+
+/* hide scrollbar for chrome, safari and opera */
+.container::-webkit-scrollbar {
+  display: none;
+}
