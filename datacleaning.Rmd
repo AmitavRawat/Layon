@@ -8,6 +8,7 @@ author: "Yash Gupta"
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(tidyverse)
+library(lubridate)
 ```
 
 ## Data Cleaning
@@ -21,11 +22,23 @@ layoff = read_csv('data/warn.csv')
 
 ```{r}
 
-layoff_refined = layoff %>%
-  rename(state = "State", company = "Company", city = "City", laidoff = "Number of Workers", warn_date = "WARN Received Date", eff_date = "Effective Date", layoff_type = "Closure/Layoff") %>%
-  select(state, laidoff) %>%
-  group_by(state) %>%
-  summarize(total_laidoff = sum(!is.na(laidoff)))
+layoff = layoff %>%
+  rename(state = "State", company = "Company", city = "City", laidoff = "Number of Workers", warn_date = "WARN Received Date", eff_date = "Effective Date", layoff_type = "Closure/Layoff")
+
+layoff = layoff %>% 
+  mdy(!is.na(layoff$warn_date)) %>%
+  mdy(!is.na(layoff$eff_date))
+  
+# na_check = layoff %>% 
+#   rename(state = "State", company = "Company", city = "City", laidoff = "Number of Workers", warn_date = "WARN Received Date", eff_date = "Effective Date", layoff_type = "Closure/Layoff") %>%
+#   group_by(state)
+
+# layoff_refined = layoff %>%
+#   select(state, laidoff) %>%
+#   group_by(state, city) %>%
+#   summarize(total_laidoff = sum(!is.na(laidoff)))
+
+
 
 ```
 
