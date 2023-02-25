@@ -1,0 +1,62 @@
+---
+title: "datacleaning"
+output: html_document
+date: "2023-02-25"
+author: "Yash Gupta"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+library(lubridate)
+library(jsonlite)
+
+install.packages("rjson")
+
+library(rjson)
+```
+
+
+``` {r}
+layoff = read_csv('../data/warn.csv')
+
+layoff = layoff %>%
+  rename(state = "State", city = "City", laid_off = "Number of Workers", date = "WARN Received Date") %>%
+  select(state, city, laid_off, date) %>%
+  filter(!is.na(date)) 
+
+layoff_city = layoff %>%
+  group_by(state, city) %>%
+  summarize(city_layoff = sum(laid_off))
+
+layoff_state = layoff %>%
+  group_by(state) %>%
+  summarize(state_layoff = sum(!is.na(laid_off)))
+
+```
+``` {r}
+
+write.csv(layoff_state, "../data/layoff_state.csv", row.names=FALSE)
+write.csv(layoff_city, "../data/layoff_city.csv", row.names=FALSE)
+write.csv(layoff, "../data/layoff.csv", row.names = FALSE)
+
+```
+
+```{r}
+
+layoff_city_final = read_csv('../data/layofffinal.csv')
+
+layoff_city_final = layoff_final %>%
+  group_by(month, year) %>%
+  summarize(state, city, laid_off)
+
+layoff_state_final = layoff_final %>%
+  group_by(month, year, state) %>%
+  summarize(total_laid_off = sum(laid_off))
+
+```
+
+```{r}
+write_json(layoff_city_final, "../data/layoff_city_final.json", row.names = FALSE)
+write_json(layoff_state_final, "../data/layoff_state_final.json", row.names = FALSE)
+```
