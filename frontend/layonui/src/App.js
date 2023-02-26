@@ -4,6 +4,8 @@ import "./App.css";
 import Cities from "./components/Cities";
 import Map from "./components/Map";
 import MapSlider from "./components/MapSlider";
+import MyNavbar from "./components/MyNavbar";
+import StateInfo from "./components/StateInfo";
 import YearCounter from "./components/YearCounter";
 import importedStateConfig from "./data/stateConfigData"; //temporary
 
@@ -14,7 +16,7 @@ const App = () => {
   const [data, setData] = useState(null);
 
   //current month
-  const [month, setMonth] = useState("Feb2020");
+  const [month, setMonth] = useState("Jan2018");
 
   //current year
   const [year, setYear] = useState("2018");
@@ -40,6 +42,9 @@ const App = () => {
 
   return (
     <React.Fragment>
+      <header>
+        <MyNavbar />
+      </header>
       {/* Grid to organize UI components */}
       <Grid
         container
@@ -47,7 +52,7 @@ const App = () => {
         direction="column"
         alignItems="center"
         justifyContent="center"
-        // style={{ minHeight: "100vh" }}
+        // style={{ backgroundColor: "#282C34" }}
       >
         <Grid item xs={12}>
           <Map
@@ -67,7 +72,13 @@ const App = () => {
 
         <Grid item xs={8}>
           <MapSlider year={year} setMonth={setMonth} />
-          <YearCounter month={month} year={year} data={data} />
+          <YearCounter
+            month={month}
+            year={year}
+            setYear={setYear}
+            setMonth={setMonth}
+          />
+          <StateInfo selectedState={selectedState} />
         </Grid>
         <Grid item xs={2} />
         <Grid style={{ marginTop: "100" }} item xs={8}>

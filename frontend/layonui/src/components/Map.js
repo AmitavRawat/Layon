@@ -187,7 +187,7 @@ const Map = (props) => {
 
       setStatesConfig({ ...statesConfigLocal });
     }
-  }, [data, month]);
+  }, [data, month, year]);
 
   console.log(statesConfig);
 

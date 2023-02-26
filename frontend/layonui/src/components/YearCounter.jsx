@@ -4,7 +4,7 @@ import AddCircleIcon from "@mui/icons-material/AddCircle";
 import { Grid, Typography } from "@mui/material";
 
 const YearCounter = (props) => {
-  const { year, month, data } = props;
+  const { year, month, setYear, setMonth } = props;
 
   const getCurrentDate = () => {
     let monthLocal = month.slice(0, 3);
@@ -39,6 +39,18 @@ const YearCounter = (props) => {
     return stringToDisplay;
   };
 
+  const handleIncrementDecrement = (increment) => {
+    if (increment) {
+      let newMonth = month.slice(0, 3) + (parseInt(year) + 1).toString();
+      setMonth(newMonth);
+      setYear((parseInt(year) + 1).toString());
+    } else {
+      let newMonth = month.slice(0, 3) + (year - 1);
+      setMonth(newMonth);
+      setYear(year - 1);
+    }
+  };
+
   return (
     <Grid
       container
@@ -48,13 +60,13 @@ const YearCounter = (props) => {
       justifyContent="center"
     >
       <Grid item xs={2}>
-        <RemoveCircleIcon />
+        <RemoveCircleIcon onClick={() => handleIncrementDecrement(false)} />
       </Grid>
       <Grid item xs={8}>
-        <Typography></Typography>
+        <Typography align="center">{`${getCurrentDate()}`}</Typography>
       </Grid>
       <Grid item xs={2}>
-        <AddCircleIcon />
+        <AddCircleIcon onClick={() => handleIncrementDecrement(true)} />
       </Grid>
     </Grid>
   );
