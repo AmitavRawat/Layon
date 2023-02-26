@@ -2,6 +2,7 @@ import React, { Component, useState, useEffect } from "react";
 import "../App.css";
 import USAMap from "react-usa-map";
 import importedStateData from "../data/data"; //actual data beinig used
+import futureData from "../data/futureData"; //future predicted data
 
 const Map = (props) => {
   const {
@@ -16,6 +17,9 @@ const Map = (props) => {
     currentCities,
     setCurrentCities,
     year,
+    predictedData,
+    setPredictedData,
+    inFuture,
   } = props;
 
   //this function returns a hexadecimal value for the map based on the intensity
@@ -40,7 +44,6 @@ const Map = (props) => {
       idx2 = 0;
     }
 
-    console.log(idx1, idx2);
     const color1 = colors[idx1];
     const color2 = colors[idx2];
     const factor =
@@ -102,98 +105,145 @@ const Map = (props) => {
 
   //useEffect hook that runs on initial load
   useEffect(() => {
-    console.log(importedStateData);
     setData(importedStateData); //sets the data after loading it
   }, []);
 
+  useEffect(() => {
+    setPredictedData(futureData);
+  });
+
   //useEffect hook to change statesConfig based on data
   useEffect(() => {
-    if (data != null && statesConfig != null) {
-      let statesConfigLocal = JSON.parse(JSON.stringify(statesConfig));
+    if (inFuture) {
+      if (statesConfig != null && predictedData != null) {
+        let statesConfigLocal = JSON.parse(JSON.stringify(statesConfig));
 
-      let dataSubset = data[month];
-      console.log(importedStateData);
+        let dataSubset = futureData[parseInt(year)];
+        console.log(statesConfigLocal);
+        //keep track of min & max layoff values to generate the map shading range
+        let range = { min: Number.MAX_SAFE_INTEGER, max: -1 };
 
-      for (const [key, value] of Object.entries(statesConfigLocal)) {
-        if (dataSubset != null && dataSubset[key] != null) {
-          statesConfigLocal[key]["layoffs"] = dataSubset[key]["layoffs"];
-          // if (dataSubset[key]["layoffs"] < range.min) {
-          //   //setting min and max values
-          //   range.min = dataSubset[key]["layoffs"];
-          // }
-          // if (dataSubset[key]["layoffs"] > range.max) {
-          //   range.max = dataSubset[key]["layoffs"];
-          // }
-        } else if (dataSubset[key] == null) {
-          statesConfigLocal[key]["layoffs"] = 0;
+        for (const [key, value] of Object.entries(statesConfigLocal)) {
+          if (dataSubset != null && dataSubset[key] != null) {
+            statesConfigLocal[key]["layoffs"] = dataSubset[key];
+            if (dataSubset[key] < range.min) {
+              //setting min and max values
+              range.min = dataSubset[key];
+            }
+            if (dataSubset[key] > range.max) {
+              range.max = dataSubset[key];
+            }
+          } else if (dataSubset[key] == null) {
+            statesConfigLocal[key]["layoffs"] = 0;
+          }
         }
+
+        console.log(statesConfigLocal);
+
+        //sets the color for the state based on the number of layoffs relative to the whole year
+        for (const [key, value] of Object.entries(statesConfigLocal)) {
+          if (statesConfigLocal[key] != null) {
+            statesConfigLocal[key]["fill"] = getColor(
+              statesConfigLocal[key]["layoffs"],
+              range
+            );
+            statesConfigLocal[key]["backupFill"] = getColor(
+              statesConfigLocal[key]["layoffs"],
+              range
+            );
+          }
+        }
+
+        setStatesConfig({ ...statesConfigLocal });
       }
+    } else {
+      if (data != null && statesConfig != null) {
+        let statesConfigLocal = JSON.parse(JSON.stringify(statesConfig));
 
-      //keep track of min & max layoff values to generate the map shading range
-      let range = { min: Number.MAX_SAFE_INTEGER, max: -1 };
+        let dataSubset = data[month];
+        // console.log(importedStateData);
 
-      //looping through the dataset for the whole year to find the max and min values
-      for (let i = 0; i < 12; i++) {
-        let month = "Jan";
-        if (i == 1) {
-          month = "Feb";
-        } else if (i == 2) {
-          month = "Mar";
-        } else if (i == 3) {
-          month = "Apr";
-        } else if (i == 4) {
-          month = "May";
-        } else if (i == 5) {
-          month = "Jun";
-        } else if (i == 6) {
-          month = "Jul";
-        } else if (i == 7) {
-          month = "Aug";
-        } else if (i == 8) {
-          month = "Sep";
-        } else if (i == 9) {
-          month = "Oct";
-        } else if (i == 10) {
-          month = "Nov";
-        } else if (i == 11) {
-          month = "Dec";
+        for (const [key, value] of Object.entries(statesConfigLocal)) {
+          if (dataSubset != null && dataSubset[key] != null) {
+            statesConfigLocal[key]["layoffs"] = dataSubset[key]["layoffs"];
+            // if (dataSubset[key]["layoffs"] < range.min) {
+            //   //setting min and max values
+            //   range.min = dataSubset[key]["layoffs"];
+            // }
+            // if (dataSubset[key]["layoffs"] > range.max) {
+            //   range.max = dataSubset[key]["layoffs"];
+            // }
+          } else if (dataSubset[key] == null) {
+            statesConfigLocal[key]["layoffs"] = 0;
+          }
         }
 
-        month += year;
+        //keep track of min & max layoff values to generate the map shading range
+        let range = { min: Number.MAX_SAFE_INTEGER, max: -1 };
 
-        if (data[month] != null) {
-          for (const [key, value] of Object.entries(data[month])) {
-            if (data[month][key] != null) {
-              if (data[month][key]["layoffs"] < range.min) {
-                range.min = data[month][key]["layoffs"];
-              }
-              if (data[month][key]["layoffs"] > range.max) {
-                range.max = data[month][key]["layoffs"];
+        //looping through the dataset for the whole year to find the max and min values
+        for (let i = 0; i < 12; i++) {
+          let month = "Jan";
+          if (i == 1) {
+            month = "Feb";
+          } else if (i == 2) {
+            month = "Mar";
+          } else if (i == 3) {
+            month = "Apr";
+          } else if (i == 4) {
+            month = "May";
+          } else if (i == 5) {
+            month = "Jun";
+          } else if (i == 6) {
+            month = "Jul";
+          } else if (i == 7) {
+            month = "Aug";
+          } else if (i == 8) {
+            month = "Sep";
+          } else if (i == 9) {
+            month = "Oct";
+          } else if (i == 10) {
+            month = "Nov";
+          } else if (i == 11) {
+            month = "Dec";
+          }
+
+          month += year;
+
+          if (data[month] != null) {
+            for (const [key, value] of Object.entries(data[month])) {
+              if (data[month][key] != null) {
+                if (data[month][key]["layoffs"] < range.min) {
+                  range.min = data[month][key]["layoffs"];
+                }
+                if (data[month][key]["layoffs"] > range.max) {
+                  range.max = data[month][key]["layoffs"];
+                }
               }
             }
           }
         }
-      }
 
-      //sets the color for the state based on the number of layoffs relative to the whole year
-      for (const [key, value] of Object.entries(statesConfigLocal)) {
-        if (statesConfigLocal[key] != null) {
-          statesConfigLocal[key]["fill"] = getColor(
-            statesConfigLocal[key]["layoffs"],
-            range
-          );
-          statesConfigLocal[key]["backupFill"] = getColor(
-            statesConfigLocal[key]["layoffs"],
-            range
-          );
+        //sets the color for the state based on the number of layoffs relative to the whole year
+        for (const [key, value] of Object.entries(statesConfigLocal)) {
+          if (statesConfigLocal[key] != null) {
+            statesConfigLocal[key]["fill"] = getColor(
+              statesConfigLocal[key]["layoffs"],
+              range
+            );
+            statesConfigLocal[key]["backupFill"] = getColor(
+              statesConfigLocal[key]["layoffs"],
+              range
+            );
+          }
         }
+
+        setStatesConfig({ ...statesConfigLocal });
       }
-
-      setStatesConfig({ ...statesConfigLocal });
     }
-  }, [data, month, year]);
+  }, [data, month, year, inFuture]);
 
-  console.log(statesConfig);
+  // console.log(statesConfig);
 
   return <USAMap customize={statesConfig} onClick={mapHandler} />;
 };
