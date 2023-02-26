@@ -21,9 +21,9 @@ const Map = (props) => {
   //this function returns a hexadecimal value for the map based on the intensity
   function getColor(value, range) {
     const colors = [
-      { r: 255, g: 229, b: 217 }, // blue
-      { r: 250, g: 105, b: 72 }, // green
-      { r: 222, g: 44, b: 38 }, // yellow
+      { r: 255, g: 229, b: 217 }, // color 1
+      { r: 217, g: 75, b: 44 }, // color 2
+      { r: 222, g: 44, b: 38 }, // color 3
       { r: 166, g: 15, b: 20 }, // red
     ];
     let idx1 = Math.floor(

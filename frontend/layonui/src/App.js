@@ -4,6 +4,7 @@ import "./App.css";
 import Cities from "./components/Cities";
 import Map from "./components/Map";
 import MapSlider from "./components/MapSlider";
+import YearDropdown from "./components/YearDropdown";
 import importedStateConfig from "./data/stateConfigData"; //temporary
 
 const App = () => {
@@ -63,7 +64,8 @@ const App = () => {
             year={year}
           />
         </Grid>
-        <Grid item xs={12}>
+
+        <Grid item xs={8}>
           <MapSlider year={year} setMonth={setMonth} />
         </Grid>
         <Grid item xs={2} />
