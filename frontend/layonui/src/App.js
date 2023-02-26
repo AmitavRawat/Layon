@@ -106,7 +106,12 @@ const App = () => {
         </Grid>
 
         <Grid item xs={8}>
-          <MapSlider year={year} setMonth={setMonth} />
+          <MapSlider
+            month={month}
+            inFuture={inFuture}
+            year={year}
+            setMonth={setMonth}
+          />
           <YearCounter
             month={month}
             year={year}
@@ -120,7 +125,7 @@ const App = () => {
         </Grid>
         <Grid item xs={2} />
         <Grid style={{ marginTop: "100" }} item xs={8}>
-          {selectedState != null && currentCities.length != 0 ? (
+          {selectedState != null && currentCities.length != 0 && !inFuture ? (
             <Cities
               currentCities={currentCities}
               selectedState={selectedState}

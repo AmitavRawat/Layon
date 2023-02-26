@@ -6,6 +6,7 @@ import CardMedia from "@mui/material/CardMedia";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 import stateAbbr from "../data/stateAbbr"; //to get the full state name from the two-letter code
+import pics from "../data/pics"; //for state flag images
 
 export default function StateCard(props) {
   const { selectedState, data, month } = props;
@@ -25,7 +26,7 @@ export default function StateCard(props) {
       <CardMedia
         sx={{ height: 140 }}
         // image="/static/images/cards/contemplative-reptile.jpg"
-        image="https://cdn.cnn.com/cnnnext/dam/assets/170606120957-california---travel-destination---shutterstock-220315747.jpg"
+        image={selectedState != null ? pics[selectedState] : ""}
         title="green iguana"
       />
       <CardContent>

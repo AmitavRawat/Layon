@@ -2,7 +2,7 @@ import { Box, Slider } from "@mui/material";
 import React, { Component } from "react";
 
 const MapSlider = (props) => {
-  const { year, setMonth } = props;
+  const { month, year, setMonth, inFuture } = props;
 
   function valuetext(value) {
     return value;
@@ -39,6 +39,7 @@ const MapSlider = (props) => {
   return (
     <Box sx={{ width: 300 }}>
       <Slider
+        disabled={inFuture || month == "Jan2023" ? true : false}
         aria-label="Month"
         defaultValue={1}
         valueLabelDisplay="auto"

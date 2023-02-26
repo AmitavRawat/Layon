@@ -44,7 +44,20 @@ const YearCounter = (props) => {
   };
 
   const handleIncrementDecrement = (increment) => {
-    if (month != "Jan2023") {
+    if (
+      month != "Jan2023" &&
+      month != "Feb2022" &&
+      month != "Mar2022" &&
+      month != "Apr2022" &&
+      month != "May2022" &&
+      month != "Jun2022" &&
+      month != "Jul2022" &&
+      month != "Aug2022" &&
+      month != "Sep2022" &&
+      month != "Oct2022" &&
+      month != "Nov2022" &&
+      month != "Dec2022"
+    ) {
       if (increment) {
         let newMonth = month.slice(0, 3) + (parseInt(year) + 1).toString();
         setMonth(newMonth);
@@ -57,7 +70,11 @@ const YearCounter = (props) => {
     } else {
       if (increment) {
         setInFuture(true);
-        setYear((parseInt(year) + 1).toString());
+        if (year == "2022") {
+          setYear((parseInt(year) + 2).toString());
+        } else {
+          setYear((parseInt(year) + 1).toString());
+        }
       } else {
         if (year != "2024") {
           // setInFuture(false);
@@ -93,8 +110,10 @@ const YearCounter = (props) => {
       </Grid>
       <Grid item xs={2}>
         <AddCircleIcon
-          style={{ color: dark ? "white" : null }}
-          onClick={() => handleIncrementDecrement(true)}
+          style={{ color: year == "2028" ? "#808080" : dark ? "white" : null }}
+          onClick={
+            year == "2028" ? () => {} : () => handleIncrementDecrement(true)
+          }
         />
       </Grid>
     </Grid>
