@@ -7,35 +7,15 @@ import java.util.*;
  */
 public class LayHash {
 
-    /**
-     * Helper class that emulates a hashtable
-     * @param <MonthYear> month and year of an object
-     * @param <State> the State
-     */
-    private static class Entry<MonthYear, State> { // want entry to hold data types
-        public MonthYear key;
-        public State value;
-
-        public Entry(MonthYear key, State value) {
-            this.key = key;
-            this.value = value;
-        }
-    }
-
     private File file; // The csv file that needs to be converted to json
-    protected Entry<MonthYear, State>[] hashtable;
+    protected ArrayList<Entry> table;
     private int capacity;
 
-    @SuppressWarnings("unchecked")
-    public LayHash(String fileName, int capacity) {
-        hashtable = (Entry<MonthYear, State>[]) new Entry[capacity];
-        this.capacity = capacity;
+    public LayHash(String fileName) {
+        table = new ArrayList<Entry>();
         this.file = new File(fileName);
     }
 
-    public int getCapacity() {
-        return capacity;
-    }
 
 
     public void add() throws FileNotFoundException {
@@ -43,13 +23,49 @@ public class LayHash {
 
         while(sc.hasNextLine()) {
             String[] splitParts = sc.nextLine().split(",");
-            MonthYear monthYear = new MonthYear(splitParts[0], Integer.parseInt(splitParts[1]));
-            int index = Math.abs(monthYear.hashCode()%getCapacity());
+            String monthYear = splitParts[0]+splitParts[1];
+            
+
+
+
+
+
+            if (isInTable(new Entry(monthYear))) {
+
+
+
+            } else {
+                // If it does not exist then add it
+                City city = new City(splitParts[3], Integer.parseInt(splitParts[4]));
+                State state = new State(splitParts[2]);
+                state.addCity(city);
+                Entry entry = new Entry(monthYear);
+                entry.addStates(state);
+            }
 
 
         }
 
     }
+
+    public boolean isInTable(Entry entry) {
+        for(int i = 0; i < table.size(); i++) {
+            if(table.get(i).getKey().equals(entry.getKey())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public int findIndexKey(Entry entry) {
+        for(int i = 0; i < table.size(); i++) {
+            if(table.get(i).getKey().equals(entry.getKey())) {
+                return i;
+            }
+        }
+        return 0;
+    }
+
 
 
 }

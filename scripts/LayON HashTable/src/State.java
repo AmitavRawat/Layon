@@ -1,37 +1,49 @@
+import java.util.ArrayList;
 import java.util.LinkedList;
 
 /**
  * The class that represents each State object which are the ValueTypes
  */
 public class State {
-
-    LinkedList<City> cities;
+    ArrayList<City> cities;
     private String stateName;
 
     public State(String stateName) {
-        cities = new LinkedList<>();
+        cities = new ArrayList<>();
         this.stateName = stateName;
-
     }
+
 
     public String getStateName() {
         return this.stateName;
     }
 
+    public ArrayList<City> getListCities() {
+        return cities;
+    }
+
 
     public void addCity(City city) {
-        // Check if the city already exits, if it does do not add it
+        if(!isInArray(city)) {
+            cities.add(city);
+        }
+    }
+
+    public boolean isInArray(City city) {
         for(int i = 0; i < cities.size(); i++) {
-            City currCity = cities.get(i);
-            // Gets the city name at each index and check if it is in the list
-            if(currCity.getCityName().equals(city.getCityName())) {
-                // If it is in the list, add the layoff count from the passed in city to the current
-                // one as they are the same (increment city layoff)
-                currCity.setLayOff(currCity.getLayOff()+city.getLayOff());
-                break;
+            if(cities.get(i).getCityName().equals(city.getCityName())) {
+                return true;
             }
         }
-        // If the loop finishes - the city does not exist so add it
-        cities.add(city);
+        return false;
+    }
+
+    public int findCity(City city) {
+        for(int i = 0; i < cities.size(); i++) {
+            if(cities.get(i).getCityName().equals(city.getCityName())) {
+                return i;
+            }
+        }
+        return 0;
     }
 }
