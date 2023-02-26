@@ -4,7 +4,7 @@ import "./App.css";
 import Cities from "./components/Cities";
 import Map from "./components/Map";
 import MapSlider from "./components/MapSlider";
-import YearDropdown from "./components/YearDropdown";
+import YearCounter from "./components/YearCounter";
 import importedStateConfig from "./data/stateConfigData"; //temporary
 
 const App = () => {
@@ -67,6 +67,7 @@ const App = () => {
 
         <Grid item xs={8}>
           <MapSlider year={year} setMonth={setMonth} />
+          <YearCounter month={month} year={year} data={data} />
         </Grid>
         <Grid item xs={2} />
         <Grid style={{ marginTop: "100" }} item xs={8}>
