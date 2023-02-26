@@ -7,7 +7,8 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
-import { Button } from "@mui/material";
+import { Button, Typography } from "@mui/material";
+import stateAbbr from "../data/stateAbbr";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -42,43 +43,55 @@ const rows = [
 ];
 
 export default function Cities(props) {
-  const { currentCities } = props;
+  const { currentCities, selectedState } = props;
 
   return (
-    <TableContainer component={Paper}>
-      <Table sx={{ minWidth: 700 }} aria-label="customized table">
-        <TableHead>
-          <TableRow>
-            <StyledTableCell>City</StyledTableCell>
-            <StyledTableCell align="center">Workers Affected</StyledTableCell>
-            <StyledTableCell align="center">Apply</StyledTableCell>
-            {/* <StyledTableCell align="right">Carbs&nbsp;(g)</StyledTableCell>
+    <React.Fragment>
+      <Typography
+        sx={{ flex: "1 1 100%" }}
+        variant="h6"
+        id="tableTitle"
+        component="div"
+        style={{ paddingBottom: 10, paddingLeft: 3 }}
+      >
+        {selectedState != null ? `${stateAbbr[selectedState]}` : null}
+      </Typography>
+      <TableContainer component={Paper}>
+        <Table sx={{ minWidth: 700 }} aria-label="customized table">
+          <TableHead>
+            <TableRow>
+              <StyledTableCell>City</StyledTableCell>
+              <StyledTableCell align="center">Workers Affected</StyledTableCell>
+              <StyledTableCell align="center">Apply</StyledTableCell>
+              {/* <StyledTableCell align="right">Carbs&nbsp;(g)</StyledTableCell>
             <StyledTableCell align="right">Protein&nbsp;(g)</StyledTableCell> */}
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {currentCities.map((row) => (
-            <StyledTableRow key={row.name}>
-              <StyledTableCell component="th" scope="row">
-                {row.name}
-              </StyledTableCell>
-              <StyledTableCell align="center">{row.layoffs}</StyledTableCell>
-              <StyledTableCell align="center">
-                <a
-                  target="_blank"
-                  href={
-                    "https://www.linkedin.com/jobs/search/?location=" + row.name
-                  }
-                >
-                  <Button variant="contained">Apply</Button>
-                </a>
-              </StyledTableCell>
-              {/* <StyledTableCell align="right">{row.carbs}</StyledTableCell> */}
-              {/* <StyledTableCell align="right">{row.protein}</StyledTableCell> */}
-            </StyledTableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {currentCities.map((row) => (
+              <StyledTableRow key={row.name}>
+                <StyledTableCell component="th" scope="row">
+                  {row.name}
+                </StyledTableCell>
+                <StyledTableCell align="center">{row.layoffs}</StyledTableCell>
+                <StyledTableCell align="center">
+                  <a
+                    target="_blank"
+                    href={
+                      "https://www.linkedin.com/jobs/search/?location=" +
+                      row.name
+                    }
+                  >
+                    <Button variant="contained">Apply</Button>
+                  </a>
+                </StyledTableCell>
+                {/* <StyledTableCell align="right">{row.carbs}</StyledTableCell> */}
+                {/* <StyledTableCell align="right">{row.protein}</StyledTableCell> */}
+              </StyledTableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </React.Fragment>
   );
 }

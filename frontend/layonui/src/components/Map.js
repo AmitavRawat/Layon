@@ -68,6 +68,8 @@ const Map = (props) => {
         console.log(statesConfigLocal[selectedState].backupFill);
         statesConfigLocal[selectedState].fill =
           statesConfigLocal[selectedState].backupFill;
+      } else {
+        setCurrentCities([]);
       }
 
       //changing the color of the selected state on the map
@@ -85,6 +87,8 @@ const Map = (props) => {
       //now setting the selected cities based on the currently selected state
       if (data != null && data[month][stateName] != null) {
         setCurrentCities(data[month][stateName]["cities"]);
+      } else if (data[month][stateName] == null) {
+        setCurrentCities([]);
       }
     }
 

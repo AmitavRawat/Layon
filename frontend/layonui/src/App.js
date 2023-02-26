@@ -78,13 +78,18 @@ const App = () => {
             setYear={setYear}
             setMonth={setMonth}
           />
-          <StateInfo selectedState={selectedState} />
+          <StateInfo selectedState={selectedState} data={data} month={month} />
         </Grid>
         <Grid item xs={2} />
         <Grid style={{ marginTop: "100" }} item xs={8}>
-          {selectedState != null ? (
-            <Cities currentCities={currentCities} />
-          ) : null}
+          {selectedState != null && currentCities.length != 0 ? (
+            <Cities
+              currentCities={currentCities}
+              selectedState={selectedState}
+            />
+          ) : (
+            "No Data to Display!"
+          )}
         </Grid>
         <Grid item xs={2} />
       </Grid>

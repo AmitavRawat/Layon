@@ -4,7 +4,7 @@ import Popper from "@mui/material/Popper";
 import StateCard from "./StateCard";
 
 export default function StateInfo(props) {
-  const { selectedState } = props;
+  const { selectedState, data, month } = props;
   const [anchorEl, setAnchorEl] = React.useState(null);
   const [open, setOpen] = React.useState(false);
 
@@ -38,7 +38,7 @@ export default function StateInfo(props) {
           left: "unset",
         }}
       >
-        <StateCard selectedState={selectedState} />
+        <StateCard selectedState={selectedState} data={data} month={month} />
       </Popper>
       {/* <Popover
         classes={{ root: style.popover }}
