@@ -25,4 +25,4 @@ Email us at:
 
 * nst@wisc.edu
 
-* acjin@wisc.edu
+* acjain@wisc.edu
